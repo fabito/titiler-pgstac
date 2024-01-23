@@ -175,7 +175,9 @@ jobs:
         image-version:
         - 'uvicorn'
         - 'gunicorn'
-
+        platform:
+        - linux/amd64
+        - linux/arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -212,21 +214,21 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: docker/build-push-action@v2
         with:
-          platforms: linux/amd64
+          platforms: ${{ matrix.platform }}
           context: .
           file: Dockerfile.${{ matrix.image-version }}
           push: true
           tags: |
-            ghcr.io/stac-utils/${{ steps.image.outputs.name }}latest
+            ghcr.io/${{ github.repository_owner }}/${{ steps.image.outputs.name }}latest
 
       # Push `{VERSION}` when pushing a new tag
       - name: Build and push tag
         if: startsWith(github.event.ref, 'refs/tags') || github.event_name == 'release'
         uses: docker/build-push-action@v2
         with:
-          platforms: linux/amd64
+          platforms: ${{ matrix.platform }}
           context: .
           file: Dockerfile.${{ matrix.image-version }}
           push: true
           tags: |
-            ghcr.io/stac-utils/${{ steps.image.outputs.name }}${{ steps.tag.outputs.version }}
+            ghcr.io/${{ github.repository_owner }}/${{ steps.image.outputs.name }}${{ steps.tag.outputs.version }}
