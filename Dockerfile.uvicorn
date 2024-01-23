@@ -1,6 +1,6 @@
 ARG PYTHON_VERSION=3.11
 
-FROM python:${PYTHON_VERSION}-slim
+FROM python:${PYTHON_VERSION}
 
 WORKDIR /tmp
 
